@@ -18,45 +18,45 @@ export class AuthenticationService {
   ) {}
 
   public async register(registrationData: RegisterDto) {
-    const hashedPassword = await bcrypt.hash(registrationData.password, 10);
-    try {
-      const createdUser = await this.usersService.create({
-        ...registrationData,
-        password: hashedPassword,
-      });
-
-      createdUser.password = undefined;
-      return createdUser;
-    } catch (error) {
-      this.logger.error('Got err when register: ', JSON.stringify(error));
-      throw new HttpException(
-        'Something went wrong',
-        HttpStatus.INTERNAL_SERVER_ERROR,
-      );
-    }
+    // const hashedPassword = await bcrypt.hash(registrationData.password, 10);
+    // try {
+    //   const createdUser = await this.usersService.create({
+    //     ...registrationData,
+    //     password: hashedPassword,
+    //   });
+    //
+    //   createdUser.password = undefined;
+    //   return createdUser;
+    // } catch (error) {
+    //   this.logger.error('Got err when register: ', JSON.stringify(error));
+    //   throw new HttpException(
+    //     'Something went wrong',
+    //     HttpStatus.INTERNAL_SERVER_ERROR,
+    //   );
+    // }
   }
 
   public async getAuthenticatedUser(phone: string, originalPassword: string) {
-    try {
-      const user = await this.usersService.getByPhone(phone);
-      const isPasswordMatching = await bcrypt.compare(
-        originalPassword,
-        user.password, // hashed password
-      );
-      if (!isPasswordMatching) {
-        throw new HttpException(
-          'Wrong credentials provided',
-          HttpStatus.BAD_REQUEST,
-        );
-      }
-      user.password = undefined;
-      return user;
-    } catch (error) {
-      throw new HttpException(
-        'Wrong credentials provided',
-        HttpStatus.BAD_REQUEST,
-      );
-    }
+    // try {
+    //   const user = await this.usersService.getByPhone(phone);
+    //   const isPasswordMatching = await bcrypt.compare(
+    //     originalPassword,
+    //     user.password, // hashed password
+    //   );
+    //   if (!isPasswordMatching) {
+    //     throw new HttpException(
+    //       'Wrong credentials provided',
+    //       HttpStatus.BAD_REQUEST,
+    //     );
+    //   }
+    //   user.password = undefined;
+    //   return user;
+    // } catch (error) {
+    //   throw new HttpException(
+    //     'Wrong credentials provided',
+    //     HttpStatus.BAD_REQUEST,
+    //   );
+    // }
   }
 
   public getCookieWithJwtToken(userId: number) {
@@ -79,8 +79,8 @@ export class AuthenticationService {
     const user = await this.getAuthenticatedUser(body.phone, body.password);
 
     const payload: JwtPayload = {
-      userId: user.id,
-      phone: user.phone,
+      userId: 1,
+      phone: 'user.phone',
     };
 
     return this.jwtService.sign(payload);

@@ -5,35 +5,42 @@ import { UpdateInfoBody } from './types/update-info-body';
 import User from './entities/users.entity';
 import { HttpResponse } from '../../types/http-response';
 import RequestWithUser from '../auth/intefaces/requestWithUser.interface';
+import { GetUserInfoBody } from './types/getUserInfo';
 
 @Controller('user')
 export class UserController {
   constructor(private readonly usersService: UsersService) {}
 
-  @UseGuards(JwtAuthenticationGuard)
-  @Get('get-info')
-  public async getInfo(@Req() request: RequestWithUser): Promise<User> {
-    console.log('Receive request get-info with payload: ', request.user);
-    const user = await this.usersService.getById(request.user.id);
-    user.password = undefined;
-    return user;
-  }
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Get('get-info')
+  // public async getInfo(@Req() request: RequestWithUser): Promise<User> {
+  //   console.log('Receive request get-info with payload: ', request.user);
+  //   const user = await this.usersService.getById(request.user.id);
+  //   user.password = undefined;
+  //   return user;
+  // }
+  //
+  // @UseGuards(JwtAuthenticationGuard)
+  // @Post('update-info')
+  // public async updateInfo(
+  //   @Req() request: RequestWithUser,
+  //   @Body() body: UpdateInfoBody,
+  // ): Promise<HttpResponse> {
+  //   console.log('Receive request update-info with payload: ', request.user);
+  //   const success = await this.usersService.updateUserInfo(
+  //     request.user.id,
+  //     body,
+  //   );
+  //
+  //   return {
+  //     success: success,
+  //     message: '',
+  //   };
+  // }
 
-  @UseGuards(JwtAuthenticationGuard)
-  @Post('update-info')
-  public async updateInfo(
-    @Req() request: RequestWithUser,
-    @Body() body: UpdateInfoBody,
-  ): Promise<HttpResponse> {
-    console.log('Receive request update-info with payload: ', request.user);
-    const success = await this.usersService.updateUserInfo(
-      request.user.id,
-      body,
-    );
-
-    return {
-      success: success,
-      message: '',
-    };
+  @Post('/:userId')
+  public async getUserInfo(@Body() body: GetUserInfoBody): Promise<User> {
+    console.log('Receive request get info with payload: ', body);
+    return await this.usersService.getUserInfo(body);
   }
 }

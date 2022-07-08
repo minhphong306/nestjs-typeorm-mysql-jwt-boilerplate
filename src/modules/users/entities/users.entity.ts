@@ -2,16 +2,18 @@ import {
   Column,
   CreateDateColumn,
   Entity,
+  PrimaryColumn,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { UserType } from '../enum/types';
 
 @Entity({
   name: 'users',
 })
 class User {
-  @PrimaryGeneratedColumn()
-  public id?: number;
+  @PrimaryColumn()
+  public id: number;
 
   @Column({
     unique: true,
@@ -27,20 +29,60 @@ class User {
   @Column({
     nullable: false,
   })
-  public password: string;
+  public email: string;
 
   @Column({
-    name: 'bank_info',
     nullable: false,
   })
-  public bankInfo: string;
+  public type: UserType;
 
   @Column({
-    type: 'integer',
-    default: 0,
     nullable: false,
+    default: false,
   })
-  public balance: number;
+  public isCompleteOnboarding: boolean;
+
+  @Column({
+    nullable: false,
+    default: '{}',
+  })
+  public onboardingConfig: string;
+
+  @Column({
+    nullable: false,
+    default: '[]',
+  })
+  public featureImages: string;
+
+  @Column({
+    nullable: false,
+    default: '{}',
+  })
+  public guessConfig: string;
+
+  @Column({
+    nullable: false,
+    default: '{}',
+  })
+  public guideConfig: string;
+
+  @Column({
+    nullable: false,
+    default: '{}',
+  })
+  public friendConfig: string;
+
+  @Column({
+    nullable: false,
+    default: false,
+  })
+  public isVerified: boolean;
+
+  @Column({
+    nullable: false,
+    default: '{}',
+  })
+  public verificationConfig: string;
 
   @CreateDateColumn({
     name: 'created_at',
@@ -56,17 +98,6 @@ class User {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updatedAt?: Date;
-
-  // public id: number;
-  // public tikiId: string;
-  // public name: string;
-  // public featureImages: string;
-  // public type: string;
-  // public guessConfig: string;
-  // public guideConfig: string;
-  // public friendConfig: string;
-  // public isVerified: boolean;
-  // public verificationConfig: boolean;
 }
 
 export default User;
