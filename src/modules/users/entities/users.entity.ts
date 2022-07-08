@@ -55,6 +55,11 @@ class User {
   public featureImages: string;
 
   @Column({
+    nullable: true,
+  })
+  public birthDate?: Date;
+
+  @Column({
     nullable: false,
     default: '{}',
   })
@@ -85,14 +90,12 @@ class User {
   public verificationConfig: string;
 
   @CreateDateColumn({
-    name: 'created_at',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
   })
   public createdAt?: Date;
 
   @UpdateDateColumn({
-    name: 'updated_at',
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',
     onUpdate: 'CURRENT_TIMESTAMP(6)',
