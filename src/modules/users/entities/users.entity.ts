@@ -56,6 +56,17 @@ class User {
     onUpdate: 'CURRENT_TIMESTAMP(6)',
   })
   public updatedAt?: Date;
+
+  // public id: number;
+  // public tikiId: string;
+  // public name: string;
+  // public featureImages: string;
+  // public type: string;
+  // public guessConfig: string;
+  // public guideConfig: string;
+  // public friendConfig: string;
+  // public isVerified: boolean;
+  // public verificationConfig: boolean;
 }
 
 export default User;
