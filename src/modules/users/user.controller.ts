@@ -1,14 +1,23 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Logger,
+  Param,
+  ParseIntPipe,
+  Post,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { UsersService } from './user.service';
-import JwtAuthenticationGuard from '../auth/jwt-authentication.guard';
-import { UpdateInfoBody } from './types/update-info-body';
 import User from './entities/users.entity';
-import { HttpResponse } from '../../types/http-response';
-import RequestWithUser from '../auth/intefaces/requestWithUser.interface';
 import { GetUserInfoBody } from './types/getUserInfo';
+import { UpdateUserInfoBody } from './types/updateUserInfo';
+import { HttpResponse } from '../../types/http-response';
 
 @Controller('user')
 export class UserController {
+  private readonly logger = new Logger(UserController.name);
   constructor(private readonly usersService: UsersService) {}
 
   // @UseGuards(JwtAuthenticationGuard)
@@ -39,8 +48,30 @@ export class UserController {
   // }
 
   @Post('/:userId')
-  public async getUserInfo(@Body() body: GetUserInfoBody): Promise<User> {
-    console.log('Receive request get info with payload: ', body);
-    return await this.usersService.getUserInfo(body);
+  public async getUserInfo(
+    @Param('userId', new ParseIntPipe()) userId,
+    @Body() body: GetUserInfoBody,
+  ): Promise<User> {
+    console.log(
+      'Receive request get info with payload: ',
+      userId,
+      ' => ',
+      body,
+    );
+    return await this.usersService.getUserInfo(userId, body);
+  }
+
+  @Post('/update/:userId')
+  public async updateUserInfo(
+    @Param('userId', new ParseIntPipe()) userId,
+    @Body() body: UpdateUserInfoBody,
+  ): Promise<HttpResponse> {
+    this.logger.debug(
+      `Receive request to user ${userId} with body: ${JSON.stringify(body)}`,
+    );
+    const status = await this.usersService.updateUserInfo(userId, body);
+    return {
+      success: status,
+    };
   }
 }
