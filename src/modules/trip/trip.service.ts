@@ -15,6 +15,8 @@ import TripSchedule from './entities/tripSchedule';
 import TripScheduleDetail from './entities/tripScheduleDetail';
 import { CreateTripSchedule } from './dto/create-schedule.dto';
 import { UpdateTripScheduleDto } from './dto/update-trip-schedule.dto';
+import { CreateTripScheduleDetailDto } from './dto/create-trip-schedule-detail.dto';
+import { UpdateTripScheduleDetailDto } from './dto/update-trip-schedule-detail.dto';
 
 @Injectable()
 export class TripService {
@@ -258,7 +260,7 @@ export class TripService {
   async getScheduleList(tripId: number): Promise<TripSchedule[]> {
     return await this.tripScheduleRepository.find({
       where: {
-        tripId1: tripId,
+        tripId: tripId,
       },
     });
   }
@@ -269,7 +271,7 @@ export class TripService {
   ): Promise<TripSchedule> {
     const tripSchedule: TripSchedule = {
       name: dto.name,
-      tripId1: tripId,
+      tripId: tripId,
       date: getDateFromDMYString(dto.date),
     };
 
@@ -297,6 +299,62 @@ export class TripService {
     const updateResult = await this.tripScheduleRepository.update(
       {
         id: scheduleId,
+      },
+      dto,
+    );
+
+    this.logger.debug(
+      `Got update schedule result: ${JSON.stringify(updateResult)}`,
+    );
+
+    return true;
+  }
+
+  async getScheduleDetail(scheduleId: number): Promise<TripScheduleDetail[]> {
+    const scheduleDetails = await this.tripScheduleDetailRepository.find({
+      where: {
+        scheduleId: scheduleId,
+      },
+    });
+
+    this.logger.debug(
+      `Got update schedule result: ${JSON.stringify(scheduleDetails)}`,
+    );
+
+    return scheduleDetails;
+  }
+
+  async createScheduleDetail(
+    scheduleId: number,
+    dto: CreateTripScheduleDetailDto,
+  ): Promise<TripScheduleDetail> {
+    const newRecord = await this.tripScheduleDetailRepository.create({
+      ...dto,
+      scheduleId,
+    });
+    await this.tripScheduleDetailRepository.save(newRecord);
+    return newRecord;
+  }
+
+  async deleteScheduleDetail(scheduleDetailId: number): Promise<boolean> {
+    const deleteResult = await this.tripScheduleDetailRepository.delete({
+      id: scheduleDetailId,
+    });
+
+    this.logger.debug(
+      `Got delete schedule detail result: ${JSON.stringify(deleteResult)}`,
+    );
+
+    return true;
+  }
+
+  async updateScheduleDetail(
+    scheduleDetailId: number,
+    dto: UpdateTripScheduleDetailDto,
+  ): Promise<boolean> {
+    const updateResult = await this.tripScheduleDetailRepository.update(
+      {
+        id: scheduleDetailId,
       },
       dto,
     );

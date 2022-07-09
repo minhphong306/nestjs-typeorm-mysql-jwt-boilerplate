@@ -18,16 +18,6 @@ export default class TripScheduleDetail {
   @Column({
     nullable: false,
   })
-  public userId: number;
-
-  @Column({
-    nullable: false,
-  })
-  public tripId: number;
-
-  @Column({
-    nullable: false,
-  })
   public scheduleId: number;
 
   @Column({
@@ -38,7 +28,7 @@ export default class TripScheduleDetail {
   @Column({
     nullable: false,
   })
-  public time: Date;
+  public time: string;
 
   @Column({
     nullable: false,
@@ -54,11 +44,6 @@ export default class TripScheduleDetail {
     nullable: false,
   })
   public location: string;
-
-  @Column({
-    nullable: false,
-  })
-  public date: Date;
 
   @CreateDateColumn({
     type: 'timestamp',

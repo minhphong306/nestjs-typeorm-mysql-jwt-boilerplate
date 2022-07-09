@@ -17,6 +17,9 @@ import TripSchedule from './entities/tripSchedule';
 import { CreateTripSchedule } from './dto/create-schedule.dto';
 import { HttpResponse } from '../../types/http-response';
 import { UpdateTripScheduleDto } from './dto/update-trip-schedule.dto';
+import TripScheduleDetail from './entities/tripScheduleDetail';
+import { CreateTripScheduleDetailDto } from './dto/create-trip-schedule-detail.dto';
+import { UpdateTripScheduleDetailDto } from './dto/update-trip-schedule-detail.dto';
 
 @Controller('trip')
 export class TripController {
@@ -94,6 +97,54 @@ export class TripController {
       JSON.stringify(body),
     );
     const res = await this.tripService.updateSchedule(+scheduleId, body);
+    return {
+      success: res,
+    };
+  }
+
+  @Get(':tripId/:scheduleId/details')
+  async getScheduleDetail(
+    @Param('scheduleId', new ParseIntPipe()) scheduleId,
+  ): Promise<TripScheduleDetail[]> {
+    this.logger.debug(`Got request get schedule detail ${scheduleId}`);
+    const res = await this.tripService.getScheduleDetail(+scheduleId);
+    return res;
+  }
+
+  @Post(':tripId/:scheduleId/details')
+  async createScheduleDetail(
+    @Param('scheduleId', new ParseIntPipe()) scheduleId,
+    @Body() body: CreateTripScheduleDetailDto,
+  ): Promise<TripScheduleDetail> {
+    this.logger.debug(
+      'Got request create trip schedule detail, body: ',
+      JSON.stringify(body),
+    );
+    const res = await this.tripService.createScheduleDetail(+scheduleId, body);
+    return res;
+  }
+
+  @Post(':tripId/:scheduleId/details/:detailId')
+  async updateScheduleDetail(
+    @Param('detailId', new ParseIntPipe()) detailId,
+    @Body() body: UpdateTripScheduleDetailDto,
+  ): Promise<HttpResponse> {
+    this.logger.debug(
+      'Got request update trip schedule detail, body: ',
+      JSON.stringify(body),
+    );
+    const res = await this.tripService.updateScheduleDetail(+detailId, body);
+    return {
+      success: res,
+    };
+  }
+
+  @Delete(':tripId/:scheduleId/details/:detailId')
+  async deleteTripScheduleDetail(
+    @Param('detailId', new ParseIntPipe()) detailId,
+  ): Promise<HttpResponse> {
+    this.logger.debug('Got request delete trip schedule, body');
+    const res = await this.tripService.deleteScheduleDetail(+detailId);
     return {
       success: res,
     };

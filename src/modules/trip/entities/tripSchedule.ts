@@ -19,7 +19,7 @@ export default class TripSchedule {
   @Column({
     nullable: false,
   })
-  public tripId1: number;
+  public tripId: number;
 
   @Column({
     nullable: false,
