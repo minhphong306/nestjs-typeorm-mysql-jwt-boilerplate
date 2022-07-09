@@ -21,3 +21,11 @@ export const getDateFromDMYString = (input: string): Date => {
 
   return new Date(Date.UTC(year, month - 1, day, 0, 0, 0));
 };
+
+export const getDateString = (inputDate: Date): string => {
+  const date = inputDate.getDate();
+  const month = inputDate.getMonth() + 1; // take care of the month's number here ⚠️
+  const year = inputDate.getFullYear();
+
+  return `${date}/${month}/${year}`;
+};

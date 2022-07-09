@@ -239,4 +239,11 @@ export class TripController {
 
     return await this.tripService.getTripFee(+tripId);
   }
+
+  @Get('general-home/home')
+  async generalHome() {
+    this.logger.debug('Got general trip fee request: ');
+
+    return await this.tripService.generalHome();
+  }
 }

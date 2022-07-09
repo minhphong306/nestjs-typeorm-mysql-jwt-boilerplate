@@ -14,8 +14,8 @@ export default class TripResponse {
   public name: string;
   public description: string;
   public featureImages: string[];
-  public from: Date;
-  public to: Date;
+  public from: string;
+  public to: string;
   public status: Status;
   public categoryType: CategoryType;
   public transportTypes: string;

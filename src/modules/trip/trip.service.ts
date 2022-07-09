@@ -10,7 +10,11 @@ import { Status, TripMemberStatus } from './enum/status';
 import { UsersService } from '../users/user.service';
 import User from '../users/entities/users.entity';
 import { getImageUrlFromJsonArray } from '../../utils/json';
-import { diffYear, getDateFromDMYString } from '../../utils/date';
+import {
+  diffYear,
+  getDateFromDMYString,
+  getDateString,
+} from '../../utils/date';
 import TripSchedule from './entities/tripSchedule';
 import TripScheduleDetail from './entities/tripScheduleDetail';
 import { CreateTripSchedule } from './dto/create-schedule.dto';
@@ -93,7 +97,7 @@ export class TripService {
       categoryType: trip.categoryType,
       description: trip.description,
       featureImages: getImageUrlFromJsonArray(trip.featureImages),
-      from: trip.from,
+      from: getDateString(trip.from),
       host: { age: diffYear(new Date(), user.birthDate), name: user.name },
       id: trip.id,
       language: trip.language,
@@ -101,7 +105,7 @@ export class TripService {
       memberCount: count,
       name: trip.name,
       status: trip.status,
-      to: trip.to,
+      to: getDateString(trip.to),
       transportTypes: trip.transportTypes,
       userId: trip.userId,
     };
@@ -281,7 +285,7 @@ export class TripService {
         categoryType: trip.categoryType,
         description: trip.description,
         featureImages: getImageUrlFromJsonArray(trip.featureImages),
-        from: trip.from,
+        from: getDateString(trip.from),
         host: { age: diffYear(new Date(), host.birthDate), name: host.name },
         id: trip.id,
         language: trip.language,
@@ -289,7 +293,7 @@ export class TripService {
         memberCount: mapCount[trip.id],
         name: trip.name,
         status: trip.status,
-        to: trip.to,
+        to: getDateString(trip.to),
         transportTypes: trip.transportTypes,
         userId: trip.userId,
       };
@@ -580,5 +584,139 @@ export class TripService {
     });
 
     return tripFees;
+  }
+
+  async generalHome() {
+    // Get current active trip
+    const tripResp = [];
+
+    const activeTrips = await this.tripRepository.find({
+      where: {
+        status: Status.Active,
+      },
+    });
+
+    if (activeTrips && activeTrips.length > 0) {
+      const userIds = [];
+      const myTripIds = [];
+      for (const trip of activeTrips) {
+        userIds.push(trip.userId);
+        myTripIds.push(trip.id);
+      }
+
+      // Get owner info
+      let owners: User[];
+      if (userIds.length > 0) {
+        owners = await this.usersService.getUserByIds(userIds);
+      }
+
+      const mapOwnerIdToObj: Record<number, User> = {};
+
+      for (const owner of owners) {
+        mapOwnerIdToObj[owner.id] = owner;
+      }
+
+      // Count member
+      const mapCount: Record<number, number> = {};
+      // TODO: count in single query to avoid N+1 problem
+      const tripIds = [...myTripIds];
+
+      for (const tripId of tripIds) {
+        mapCount[tripId] = await this.tripMemberRepository.count({
+          where: {
+            tripId: tripId,
+          },
+        });
+      }
+
+      // TODO: Count local guide
+
+      // Map response
+      for (const trip of activeTrips) {
+        const host = mapOwnerIdToObj[trip.userId];
+
+        const respItem: TripResponse = {
+          budgetFrom: trip.budgetFrom,
+          budgetTo: trip.budgetTo,
+          categoryType: trip.categoryType,
+          description: trip.description,
+          featureImages: getImageUrlFromJsonArray(trip.featureImages),
+          from: getDateString(trip.from),
+          host: { age: diffYear(new Date(), host.birthDate), name: host.name },
+          id: trip.id,
+          language: trip.language,
+          localGuideCount: 999,
+          memberCount: mapCount[trip.id],
+          name: trip.name,
+          status: trip.status,
+          to: getDateString(trip.to),
+          transportTypes: trip.transportTypes,
+          userId: trip.userId,
+        };
+
+        tripResp.push(respItem);
+      }
+    }
+
+    return {
+      trips: tripResp,
+      friends: [
+        {
+          id: 1,
+          featureImages: [
+            'https://congcu.org/tiny/travel/sampleUser01.jpeg',
+            'https://congcu.org/tiny/travel/sampleUser02.jpeg',
+          ],
+          location: 'Đắc Nông, Việt Nam',
+          name: 'Nga Nguyễn',
+          bio: 'Yêu thích vẻ đẹp hoang sơ của thiên nhiên',
+          age: 25,
+          favorites: ['Trekking', 'Camping', 'Moutain'],
+        },
+        {
+          id: 1,
+          featureImages: [
+            'https://congcu.org/tiny/travel/sampleUser01.jpeg',
+            'https://congcu.org/tiny/travel/sampleUser02.jpeg',
+          ],
+          location: 'Đắc Nông, Việt Nam',
+          name: 'Nga Nguyễn',
+          bio: 'Yêu thích vẻ đẹp hoang sơ của thiên nhiên',
+          age: 25,
+          favorites: ['Trekking', 'Camping', 'Moutain'],
+        },
+      ],
+      guide: [
+        {
+          id: 1,
+          featureImages: [
+            'https://congcu.org/tiny/travel/sampleUser01.jpeg',
+            'https://congcu.org/tiny/travel/sampleUser02.jpeg',
+          ],
+          location: 'Đắc Nông, Việt Nam',
+          name: 'Nga Nguyễn',
+          bio: 'Yêu thích vẻ đẹp hoang sơ của thiên nhiên',
+          age: 25,
+          favorites: ['Trekking', 'Camping', 'Moutain'],
+        },
+      ],
+      shop: [
+        {
+          name: 'Cáp treo',
+          featureImages: [],
+          rate: 4,
+          sold: 100,
+          price: '345.999 đ',
+        },
+      ],
+      posts: [
+        {
+          id: 1,
+          title: 'Hà Giang những ngày đầy nắng và em bé địu trên lưng',
+          date: '10/10/2022',
+          featureImages: [],
+        },
+      ],
+    };
   }
 }
