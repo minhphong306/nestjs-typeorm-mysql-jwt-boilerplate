@@ -783,7 +783,28 @@ export class TripService {
           id: 1,
           title: 'Hà Giang những ngày đầy nắng và em bé địu trên lưng',
           date: '10/10/2022',
-          featureImages: [],
+          featureImages: [
+            'https://congcu.org/tiny/travel/posts/1.jpg',
+            'https://congcu.org/tiny/travel/posts/2.jpg',
+          ],
+        },
+        {
+          id: 2,
+          title: 'Hội An và những chiếc đèn lồng biểu tượng',
+          date: '10/12/2022',
+          featureImages: [
+            'https://congcu.org/tiny/travel/posts/3.jpg',
+            'https://congcu.org/tiny/travel/posts/4.jpg',
+          ],
+        },
+        {
+          id: 3,
+          title: 'Hạ Long và những con nsgf',
+          date: '10/9/2022',
+          featureImages: [
+            'https://congcu.org/tiny/travel/posts/5.jpg',
+            'https://congcu.org/tiny/travel/posts/6.jpg',
+          ],
         },
       ],
     };
