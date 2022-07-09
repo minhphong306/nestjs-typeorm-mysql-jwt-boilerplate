@@ -20,6 +20,8 @@ import { UpdateTripScheduleDetailDto } from './dto/update-trip-schedule-detail.d
 import { CreateTripMemberDto } from './dto/create-trip-member.dto';
 import { TripMemberResponseDto } from './dto/trip-member-response.dto';
 import { UpdateTripMemberDto } from './dto/update-trip-member';
+import { CreateTripFeeDto, UpdateTripFeeDto } from './dto/create-trip-fee.dto';
+import TripFee from './entities/tripFee.entity';
 
 @Injectable()
 export class TripService {
@@ -36,6 +38,9 @@ export class TripService {
 
     @InjectRepository(TripScheduleDetail)
     private tripScheduleDetailRepository: Repository<TripScheduleDetail>,
+
+    @InjectRepository(TripFee)
+    private tripFeeRepository: Repository<TripFee>,
   ) {}
 
   async create(dto: CreateTripDto): Promise<Trip> {
@@ -455,5 +460,90 @@ export class TripService {
     );
 
     return true;
+  }
+
+  async createTripFee(tripId: number, dto: CreateTripFeeDto): Promise<TripFee> {
+    // Check is all member
+    const tripMembers = await this.tripMemberRepository.find({
+      where: {
+        tripId: tripId,
+      },
+    });
+
+    let isAllMember = false;
+    if (tripMembers.length === dto.memberIds.length) {
+      isAllMember = true;
+    }
+
+    const obj: TripFee = {
+      tripId: tripId,
+      userId: dto.userId,
+      name: dto.name,
+      isAllMember: isAllMember,
+      memberIds: JSON.stringify(dto.memberIds),
+      amount: dto.amount,
+      userSpendId: dto.userSpendId,
+      date: getDateFromDMYString(dto.date),
+    };
+
+    const createdObj = await this.tripFeeRepository.create(obj);
+    await this.tripFeeRepository.save(createdObj);
+    return createdObj;
+  }
+
+  async updateTripFee(
+    tripFeeId: number,
+    dto: UpdateTripFeeDto,
+  ): Promise<boolean> {
+    // Check is all member
+    const tripFeeRecord = await this.tripFeeRepository.findOne({
+      where: {
+        id: tripFeeId,
+      },
+    });
+
+    if (!tripFeeRecord) {
+      throw new HttpException('Invalid trip', HttpStatus.BAD_REQUEST);
+    }
+
+    const tripMembers = await this.tripMemberRepository.find({
+      where: {
+        tripId: tripFeeRecord.tripId,
+      },
+    });
+
+    let isAllMember = false;
+    if (tripMembers.length === dto.memberIds.length) {
+      isAllMember = true;
+    }
+
+    const updateResult = await this.tripFeeRepository.update(
+      {
+        id: tripFeeId,
+      },
+      {
+        tripId: tripFeeRecord.tripId,
+        name: dto.name,
+        isAllMember: isAllMember,
+        memberIds: JSON.stringify(dto.memberIds),
+        amount: dto.amount,
+        userSpendId: dto.userSpendId,
+        date: getDateFromDMYString(dto.date),
+      },
+    );
+
+    console.log(`Got update result: ${JSON.stringify(updateResult)}`);
+
+    return true;
+  }
+
+  async getTripFee(tripId: number): Promise<TripFee[]> {
+    const tripFees = await this.tripFeeRepository.find({
+      where: {
+        tripId: tripId,
+      },
+    });
+
+    return tripFees;
   }
 }

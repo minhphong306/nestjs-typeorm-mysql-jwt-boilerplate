@@ -24,6 +24,9 @@ import { CreateTripMemberDto } from './dto/create-trip-member.dto';
 import TripMember from './entities/tripMember.entity';
 import { TripMemberResponseDto } from './dto/trip-member-response.dto';
 import { UpdateTripMemberDto } from './dto/update-trip-member';
+import { CreateTripFeeDto, UpdateTripFeeDto } from './dto/create-trip-fee.dto';
+import TripFee from './entities/tripFee.entity';
+import Trip from './entities/trip.entity';
 
 @Controller('trip')
 export class TripController {
@@ -196,5 +199,38 @@ export class TripController {
     return {
       success: res,
     };
+  }
+
+  // Fee API
+  @Post(':tripId/fee')
+  async createTripFee(
+    @Param('tripId', new ParseIntPipe()) tripId,
+    @Body() body: CreateTripFeeDto,
+  ): Promise<TripFee> {
+    this.logger.debug('Got create trip fee, body: ', JSON.stringify(body));
+
+    return await this.tripService.createTripFee(+tripId, body);
+  }
+
+  @Post(':tripId/fee/:tripFeeId')
+  async updateTripFee(
+    @Param('tripFeeId', new ParseIntPipe()) tripFeeId,
+    @Body() body: UpdateTripFeeDto,
+  ): Promise<HttpResponse> {
+    this.logger.debug('Got update trip fee: ', JSON.stringify(body));
+
+    const result = await this.tripService.updateTripFee(+tripFeeId, body);
+    return {
+      success: result,
+    };
+  }
+
+  @Get(':tripId/fee')
+  async getTripFee(
+    @Param('tripId', new ParseIntPipe()) tripId,
+  ): Promise<TripFee[]> {
+    this.logger.debug('Got get trip fee request: ', tripId);
+
+    return await this.tripService.getTripFee(+tripId);
   }
 }

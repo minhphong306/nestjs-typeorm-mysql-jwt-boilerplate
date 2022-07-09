@@ -27,12 +27,22 @@ export default class TripFee {
   @Column({
     nullable: false,
   })
+  public name: string;
+
+  @Column({
+    nullable: false,
+  })
   public isAllMember: boolean;
 
   @Column({
     nullable: false,
   })
   public memberIds: string;
+
+  @Column({
+    nullable: false,
+  })
+  public date: Date;
 
   @Column({
     nullable: false,
