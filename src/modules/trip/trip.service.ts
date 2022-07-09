@@ -6,11 +6,11 @@ import { In, Repository } from 'typeorm';
 import Trip from './entities/trip.entity';
 import TripResponse from './dto/trip-response';
 import TripMember from './entities/tripMember.entity';
-import { TripMemberStatus } from './enum/status';
+import { Status, TripMemberStatus } from './enum/status';
 import { UsersService } from '../users/user.service';
 import User from '../users/entities/users.entity';
 import { getImageUrlFromJsonArray } from '../../utils/json';
-import { diffYear } from '../../utils/date';
+import { diffYear, getDateFromDMYString } from '../../utils/date';
 
 @Injectable()
 export class TripService {
@@ -23,8 +23,25 @@ export class TripService {
     private tripMemberRepository: Repository<TripMember>,
   ) {}
 
-  create(createTripDto: CreateTripDto) {
-    return 'This action adds a new trip';
+  async create(dto: CreateTripDto): Promise<Trip> {
+    const trip: Trip = {
+      budgetFrom: dto.budgetFrom,
+      budgetTo: dto.budgetTo,
+      categoryType: dto.categoryType,
+      description: dto.description,
+      featureImages: JSON.stringify(dto.featureImages),
+      from: getDateFromDMYString(dto.fromTime),
+      language: dto.language,
+      name: dto.name,
+      status: Status.Draft,
+      to: getDateFromDMYString(dto.toTime),
+      transportTypes: '',
+      userId: dto.userId,
+    };
+
+    const newUser = await this.tripRepository.create(trip);
+    await this.tripRepository.save(newUser);
+    return newUser;
   }
 
   findAll() {
