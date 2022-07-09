@@ -27,5 +27,5 @@ export const getDateString = (inputDate: Date): string => {
   const month = inputDate.getMonth() + 1; // take care of the month's number here ⚠️
   const year = inputDate.getFullYear();
 
-  return `${date}/${month}/${year}`;
+  return `${date}-${month}-${year}`;
 };
