@@ -31,14 +31,11 @@ export class TripService {
     private readonly usersService: UsersService,
     @InjectRepository(TripSchedule)
     private tripScheduleRepository: Repository<TripSchedule>,
-
     @InjectRepository(Trip) private tripRepository: Repository<Trip>,
     @InjectRepository(TripMember)
     private tripMemberRepository: Repository<TripMember>,
-
     @InjectRepository(TripScheduleDetail)
     private tripScheduleDetailRepository: Repository<TripScheduleDetail>,
-
     @InjectRepository(TripFee)
     private tripFeeRepository: Repository<TripFee>,
   ) {}
@@ -68,8 +65,46 @@ export class TripService {
     return `This action returns all trip`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} trip`;
+  async findOne(id: number): Promise<TripResponse> {
+    // Get my trip
+    const trip = await this.tripRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!trip) {
+      this.logger.debug(`Not found trip with id: ${id}`);
+      throw new HttpException('Not found trip', HttpStatus.NOT_FOUND);
+    }
+
+    const user = await this.usersService.getUserInfo(trip.userId, null);
+
+    // Count member
+    const count = await this.tripMemberRepository.count({
+      where: {
+        tripId: trip.id,
+      },
+    });
+
+    return {
+      budgetFrom: trip.budgetFrom,
+      budgetTo: trip.budgetTo,
+      categoryType: trip.categoryType,
+      description: trip.description,
+      featureImages: getImageUrlFromJsonArray(trip.featureImages),
+      from: trip.from,
+      host: { age: diffYear(new Date(), user.birthDate), name: user.name },
+      id: trip.id,
+      language: trip.language,
+      localGuideCount: 999,
+      memberCount: count,
+      name: trip.name,
+      status: trip.status,
+      to: trip.to,
+      transportTypes: trip.transportTypes,
+      userId: trip.userId,
+    };
   }
 
   async update(id: number, body: UpdateTripDto) {

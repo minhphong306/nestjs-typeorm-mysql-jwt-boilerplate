@@ -44,6 +44,12 @@ export class TripController {
     return this.tripService.findAll();
   }
 
+  @Get(':id')
+  getTrip(@Param('id', new ParseIntPipe()) id) {
+    this.logger.log('Got get trip request: ');
+    return this.tripService.findOne(+id);
+  }
+
   @Patch(':id')
   update(
     @Param('id', new ParseIntPipe()) id,
