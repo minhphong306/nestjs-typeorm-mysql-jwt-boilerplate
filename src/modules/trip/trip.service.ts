@@ -19,6 +19,7 @@ import { CreateTripScheduleDetailDto } from './dto/create-trip-schedule-detail.d
 import { UpdateTripScheduleDetailDto } from './dto/update-trip-schedule-detail.dto';
 import { CreateTripMemberDto } from './dto/create-trip-member.dto';
 import { TripMemberResponseDto } from './dto/trip-member-response.dto';
+import { UpdateTripMemberDto } from './dto/update-trip-member';
 
 @Injectable()
 export class TripService {
@@ -425,5 +426,34 @@ export class TripService {
     }
 
     return resp;
+  }
+
+  async updateTripMember(
+    id: number,
+    dto: UpdateTripMemberDto,
+  ): Promise<boolean> {
+    const updateResult = await this.tripMemberRepository.update(
+      {
+        id: id,
+      },
+      {
+        status: dto.status,
+      },
+    );
+
+    this.logger.debug('Got update result: ', JSON.stringify(updateResult));
+    return true;
+  }
+
+  async deleteTripMember(tripMemberId: number): Promise<boolean> {
+    const deleteResult = await this.tripMemberRepository.delete({
+      id: tripMemberId,
+    });
+
+    this.logger.debug(
+      `Got delete trip member result: ${JSON.stringify(deleteResult)}`,
+    );
+
+    return true;
   }
 }

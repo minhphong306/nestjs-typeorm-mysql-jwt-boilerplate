@@ -23,10 +23,12 @@ import { UpdateTripScheduleDetailDto } from './dto/update-trip-schedule-detail.d
 import { CreateTripMemberDto } from './dto/create-trip-member.dto';
 import TripMember from './entities/tripMember.entity';
 import { TripMemberResponseDto } from './dto/trip-member-response.dto';
+import { UpdateTripMemberDto } from './dto/update-trip-member';
 
 @Controller('trip')
 export class TripController {
   private readonly logger = new Logger(TripController.name);
+
   constructor(private readonly tripService: TripService) {}
 
   @Post()
@@ -170,5 +172,29 @@ export class TripController {
     this.logger.debug('Got request get trip member');
 
     return await this.tripService.getTripMembers(+tripId);
+  }
+
+  @Post(':tripId/members/:memberId')
+  async updateTripMember(
+    @Param('memberId', new ParseIntPipe()) memberId,
+    @Body() body: UpdateTripMemberDto,
+  ): Promise<HttpResponse> {
+    this.logger.debug('Got request get trip member');
+
+    const result = await this.tripService.updateTripMember(+memberId, body);
+    return {
+      success: result,
+    };
+  }
+
+  @Delete(':tripId/members/:memberId')
+  async deleteTripMember(
+    @Param('memberId', new ParseIntPipe()) memberId,
+  ): Promise<HttpResponse> {
+    this.logger.debug('Got request delete trip schedule, body');
+    const res = await this.tripService.deleteTripMember(+memberId);
+    return {
+      success: res,
+    };
   }
 }
