@@ -9,7 +9,9 @@ import {
 import { Status, TripMemberStatus } from '../enum/status';
 import { CategoryType } from '../enum/categoryType';
 
-@Entity()
+@Entity({
+  name: 'trip_schedule',
+})
 export default class TripSchedule {
   @PrimaryGeneratedColumn()
   public id?: number;
@@ -17,12 +19,7 @@ export default class TripSchedule {
   @Column({
     nullable: false,
   })
-  public userId: number;
-
-  @Column({
-    nullable: false,
-  })
-  public tripId: number;
+  public tripId1: number;
 
   @Column({
     nullable: false,

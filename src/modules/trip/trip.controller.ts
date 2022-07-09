@@ -13,6 +13,9 @@ import { TripService } from './trip.service';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import TripResponse from './dto/trip-response';
+import TripSchedule from './entities/tripSchedule';
+import { CreateTripSchedule } from './dto/create-schedule.dto';
+import { HttpResponse } from '../../types/http-response';
 
 @Controller('trip')
 export class TripController {
@@ -48,5 +51,39 @@ export class TripController {
     @Param('userId', new ParseIntPipe()) userId,
   ): Promise<TripResponse[]> {
     return await this.tripService.getMyTrip(+userId);
+  }
+
+  @Get(':tripId/schedule')
+  async getSchedules(
+    @Param('tripId', new ParseIntPipe()) tripId,
+  ): Promise<TripSchedule[]> {
+    return await this.tripService.getScheduleList(+tripId);
+  }
+
+  @Post(':tripId/schedule')
+  async createTripSchedule(
+    @Param('tripId', new ParseIntPipe()) tripId,
+    @Body() body: CreateTripSchedule,
+  ): Promise<TripSchedule> {
+    this.logger.debug(
+      'Got request create trip schedule, body: ',
+      JSON.stringify(body),
+    );
+    return await this.tripService.createSchedule(+tripId, body);
+  }
+
+  @Delete(':tripId/schedule/:scheduleId')
+  async deleteTripSchedule(
+    @Param('scheduleId', new ParseIntPipe()) scheduleId,
+    @Body() body: CreateTripSchedule,
+  ): Promise<HttpResponse> {
+    this.logger.debug(
+      'Got request create trip schedule, body: ',
+      JSON.stringify(body),
+    );
+    const res = await this.tripService.deleteSchedule(+scheduleId);
+    return {
+      success: res,
+    };
   }
 }

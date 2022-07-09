@@ -13,11 +13,11 @@ import TripScheduleDetail from './entities/tripScheduleDetail';
   imports: [
     UsersModule,
     TypeOrmModule.forFeature([
-      Trip,
+      TripScheduleDetail,
+      TripSchedule,
       TripMember,
       TripFee,
-      TripSchedule,
-      TripScheduleDetail,
+      Trip,
     ]),
   ],
   controllers: [TripController],

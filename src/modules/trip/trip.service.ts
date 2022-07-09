@@ -11,6 +11,9 @@ import { UsersService } from '../users/user.service';
 import User from '../users/entities/users.entity';
 import { getImageUrlFromJsonArray } from '../../utils/json';
 import { diffYear, getDateFromDMYString } from '../../utils/date';
+import TripSchedule from './entities/tripSchedule';
+import TripScheduleDetail from './entities/tripScheduleDetail';
+import { CreateTripSchedule } from './dto/create-schedule.dto';
 
 @Injectable()
 export class TripService {
@@ -18,9 +21,15 @@ export class TripService {
 
   constructor(
     private readonly usersService: UsersService,
+    @InjectRepository(TripSchedule)
+    private tripScheduleRepository: Repository<TripSchedule>,
+
     @InjectRepository(Trip) private tripRepository: Repository<Trip>,
     @InjectRepository(TripMember)
     private tripMemberRepository: Repository<TripMember>,
+
+    @InjectRepository(TripScheduleDetail)
+    private tripScheduleDetailRepository: Repository<TripScheduleDetail>,
   ) {}
 
   async create(dto: CreateTripDto): Promise<Trip> {
@@ -243,5 +252,40 @@ export class TripService {
     }
 
     return resp;
+  }
+
+  async getScheduleList(tripId: number): Promise<TripSchedule[]> {
+    return await this.tripScheduleRepository.find({
+      where: {
+        tripId1: tripId,
+      },
+    });
+  }
+
+  async createSchedule(
+    tripId: number,
+    dto: CreateTripSchedule,
+  ): Promise<TripSchedule> {
+    const tripSchedule: TripSchedule = {
+      name: dto.name,
+      tripId1: tripId,
+      date: getDateFromDMYString(dto.date),
+    };
+
+    const newSchedule = await this.tripScheduleRepository.create(tripSchedule);
+    await this.tripScheduleRepository.save(newSchedule);
+    return newSchedule;
+  }
+
+  async deleteSchedule(scheduleId: number): Promise<boolean> {
+    const deleteResult = await this.tripScheduleRepository.delete({
+      id: scheduleId,
+    });
+
+    this.logger.debug(
+      `Got delete schedule result: ${JSON.stringify(deleteResult)}`,
+    );
+
+    return true;
   }
 }
