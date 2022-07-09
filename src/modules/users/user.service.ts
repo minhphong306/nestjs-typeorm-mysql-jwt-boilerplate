@@ -1,6 +1,6 @@
 import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 import User from './entities/users.entity';
 import { GetUserInfoBody } from './types/getUserInfo';
 import { UserType } from './enum/types';
@@ -137,5 +137,13 @@ export class UsersService {
     );
 
     return true;
+  }
+
+  async getUserByIds(userIds: number[]): Promise<User[]> {
+    return await this.usersRepository.find({
+      where: {
+        id: In(userIds),
+      },
+    });
   }
 }
