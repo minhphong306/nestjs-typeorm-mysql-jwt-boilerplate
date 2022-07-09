@@ -14,6 +14,7 @@ import { diffYear, getDateFromDMYString } from '../../utils/date';
 import TripSchedule from './entities/tripSchedule';
 import TripScheduleDetail from './entities/tripScheduleDetail';
 import { CreateTripSchedule } from './dto/create-schedule.dto';
+import { UpdateTripScheduleDto } from './dto/update-trip-schedule.dto';
 
 @Injectable()
 export class TripService {
@@ -284,6 +285,24 @@ export class TripService {
 
     this.logger.debug(
       `Got delete schedule result: ${JSON.stringify(deleteResult)}`,
+    );
+
+    return true;
+  }
+
+  async updateSchedule(
+    scheduleId: number,
+    dto: UpdateTripScheduleDto,
+  ): Promise<boolean> {
+    const updateResult = await this.tripScheduleRepository.update(
+      {
+        id: scheduleId,
+      },
+      dto,
+    );
+
+    this.logger.debug(
+      `Got update schedule result: ${JSON.stringify(updateResult)}`,
     );
 
     return true;
