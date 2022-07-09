@@ -1,13 +1,13 @@
 import {
-  Controller,
-  Get,
-  Post,
   Body,
-  Patch,
-  Param,
+  Controller,
   Delete,
-  ParseIntPipe,
+  Get,
   Logger,
+  Param,
+  ParseIntPipe,
+  Patch,
+  Post,
 } from '@nestjs/common';
 import { TripService } from './trip.service';
 import { CreateTripDto } from './dto/create-trip.dto';
@@ -20,6 +20,9 @@ import { UpdateTripScheduleDto } from './dto/update-trip-schedule.dto';
 import TripScheduleDetail from './entities/tripScheduleDetail';
 import { CreateTripScheduleDetailDto } from './dto/create-trip-schedule-detail.dto';
 import { UpdateTripScheduleDetailDto } from './dto/update-trip-schedule-detail.dto';
+import { CreateTripMemberDto } from './dto/create-trip-member.dto';
+import TripMember from './entities/tripMember.entity';
+import { TripMemberResponseDto } from './dto/trip-member-response.dto';
 
 @Controller('trip')
 export class TripController {
@@ -148,5 +151,24 @@ export class TripController {
     return {
       success: res,
     };
+  }
+
+  @Post(':tripId/members')
+  async createTripMember(
+    @Param('tripId', new ParseIntPipe()) tripId,
+    @Body() body: CreateTripMemberDto,
+  ): Promise<TripMember> {
+    this.logger.debug('Got create trip member, body: ', JSON.stringify(body));
+
+    return await this.tripService.createTripMember(+tripId, body);
+  }
+
+  @Get(':tripId/members')
+  async getTripMember(
+    @Param('tripId', new ParseIntPipe()) tripId,
+  ): Promise<TripMemberResponseDto[]> {
+    this.logger.debug('Got request get trip member');
+
+    return await this.tripService.getTripMembers(+tripId);
   }
 }

@@ -17,6 +17,8 @@ import { CreateTripSchedule } from './dto/create-schedule.dto';
 import { UpdateTripScheduleDto } from './dto/update-trip-schedule.dto';
 import { CreateTripScheduleDetailDto } from './dto/create-trip-schedule-detail.dto';
 import { UpdateTripScheduleDetailDto } from './dto/update-trip-schedule-detail.dto';
+import { CreateTripMemberDto } from './dto/create-trip-member.dto';
+import { TripMemberResponseDto } from './dto/trip-member-response.dto';
 
 @Injectable()
 export class TripService {
@@ -364,5 +366,64 @@ export class TripService {
     );
 
     return true;
+  }
+
+  async createTripMember(
+    tripId: number,
+    dto: CreateTripMemberDto,
+  ): Promise<TripMember> {
+    const newRecord = await this.tripMemberRepository.create({
+      ...dto,
+      tripId,
+    });
+    await this.tripMemberRepository.save(newRecord);
+    return newRecord;
+  }
+
+  async getTripMembers(tripId: number): Promise<TripMemberResponseDto[]> {
+    const resp: TripMemberResponseDto[] = [];
+
+    const members = await this.tripMemberRepository.find({
+      where: {
+        tripId: tripId,
+      },
+    });
+
+    if (members.length === 0) {
+      return resp;
+    }
+
+    const userIds = [];
+    for (const member of members) {
+      userIds.push(member.userId);
+    }
+
+    console.log('Get user by ids: ', userIds);
+    const users = await this.usersService.getUserByIds(userIds);
+    const mapUser: Record<number, User> = {};
+
+    for (const user of users) {
+      mapUser[user.id] = user;
+    }
+
+    // Fill user info
+    for (const member of members) {
+      const user = mapUser[member.userId];
+
+      const respItem: TripMemberResponseDto = {
+        age: diffYear(new Date(), user.birthDate),
+        description: user.description,
+        favorites: [user.favorites],
+        id: member.id,
+        location: user.location,
+        name: user.name,
+        status: member.status,
+        userId: user.id,
+      };
+
+      resp.push(respItem);
+    }
+
+    return resp;
   }
 }

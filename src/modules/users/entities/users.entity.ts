@@ -89,6 +89,21 @@ class User {
   })
   public verificationConfig: string;
 
+  @Column({
+    nullable: true,
+  })
+  public description: string;
+
+  @Column({
+    nullable: true,
+  })
+  public favorites: string;
+
+  @Column({
+    nullable: true,
+  })
+  public location: string;
+
   @CreateDateColumn({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP(6)',

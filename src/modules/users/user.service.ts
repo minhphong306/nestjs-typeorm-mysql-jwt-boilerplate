@@ -90,6 +90,9 @@ export class UsersService {
       verificationConfig: '{}',
       isCompleteOnboarding: false,
       onboardingConfig: '{}',
+      description: '',
+      favorites: '',
+      location: '',
     };
 
     const newUser = await this.usersRepository.create(defaultUser);
