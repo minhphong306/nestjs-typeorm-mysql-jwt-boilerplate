@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { CreateTripDto } from './dto/create-trip.dto';
 import { UpdateTripDto } from './dto/update-trip.dto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -52,8 +52,77 @@ export class TripService {
     return `This action returns a #${id} trip`;
   }
 
-  update(id: number, updateTripDto: UpdateTripDto) {
-    return `This action updates a #${id} trip`;
+  async update(id: number, body: UpdateTripDto) {
+    const trip = await this.tripRepository.findOne({
+      where: {
+        id: id,
+      },
+    });
+
+    if (!trip) {
+      this.logger.error(`Trip with id ${id} does not exist`);
+      throw new HttpException(
+        'Trip with this id does not exist',
+        HttpStatus.NOT_FOUND,
+      );
+    }
+
+    const partialEntity = {};
+
+    this.logger.debug('body.updatedFields: ', body.updatedFields);
+
+    if (body.updatedFields['name']) {
+      partialEntity['name'] = body.trip.name;
+    }
+
+    if (body.updatedFields['description']) {
+      partialEntity['description'] = body.trip.description;
+    }
+
+    if (body.updatedFields['featureImages']) {
+      partialEntity['featureImages'] = JSON.stringify(body.trip.featureImages);
+    }
+
+    if (body.updatedFields['from']) {
+      partialEntity['from'] = body.trip.from;
+    }
+
+    if (body.updatedFields['to']) {
+      partialEntity['to'] = body.trip.to;
+    }
+
+    if (body.updatedFields['status']) {
+      partialEntity['status'] = body.trip.status;
+    }
+
+    if (body.updatedFields['budgetFrom']) {
+      partialEntity['budgetFrom'] = body.trip.budgetFrom;
+    }
+
+    if (body.updatedFields['budgetTo']) {
+      partialEntity['budgetTo'] = body.trip.budgetTo;
+    }
+
+    if (body.updatedFields['language']) {
+      partialEntity['language'] = body.trip.language;
+    }
+
+    console.log('Partial entity: ', partialEntity);
+
+    const updateResult = await this.tripRepository.update(
+      {
+        id: id,
+      },
+      partialEntity,
+    );
+
+    this.logger.debug(
+      `Got result after update (${JSON.stringify(
+        partialEntity,
+      )}): ${JSON.stringify(updateResult)}`,
+    );
+
+    return true;
   }
 
   remove(id: number) {
