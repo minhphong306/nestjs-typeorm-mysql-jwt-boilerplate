@@ -17,7 +17,7 @@ class User {
     unique: true,
     nullable: false,
   })
-  public phone: string;
+  public username: string;
 
   @Column({
     nullable: false,
@@ -28,19 +28,6 @@ class User {
     nullable: false,
   })
   public password: string;
-
-  @Column({
-    name: 'bank_info',
-    nullable: false,
-  })
-  public bankInfo: string;
-
-  @Column({
-    type: 'integer',
-    default: 0,
-    nullable: false,
-  })
-  public balance: number;
 
   @CreateDateColumn({
     name: 'created_at',

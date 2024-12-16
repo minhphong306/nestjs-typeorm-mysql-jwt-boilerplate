@@ -6,6 +6,7 @@ import * as Joi from '@hapi/joi';
 import { DatabaseModule } from '../database/database.module';
 import { AuthenticationModule } from '../auth/authentication.module';
 import { UsersModule } from '../users/user.module';
+import { RunModule } from '../run/run.module';
 
 @Module({
   imports: [
@@ -25,11 +26,14 @@ import { UsersModule } from '../users/user.module';
 
         QUERY_LOG_ENABLE: Joi.boolean().required(),
         MAX_QUERY_RETRY: Joi.number().required(),
+        
+        API_SECRET: Joi.string().required(),
       }),
     }),
     DatabaseModule,
     AuthenticationModule,
     UsersModule,
+    RunModule,
   ],
   controllers: [AppController],
   providers: [AppService],

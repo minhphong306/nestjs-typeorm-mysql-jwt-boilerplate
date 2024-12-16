@@ -4,8 +4,8 @@ import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { UsersService } from '../users/user.service';
 import { JwtPayload } from './intefaces/token-payload.interface';
 import * as bcrypt from 'bcrypt';
-import RegisterDto from './dto/register.dto';
 import { LoginBody } from './intefaces/loginBody.interface';
+import RegisterDto from '../users/dto/register.dto';
 
 @Injectable()
 export class AuthenticationService {
@@ -15,7 +15,7 @@ export class AuthenticationService {
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService,
-  ) {}
+  ) { }
 
   public async register(registrationData: RegisterDto) {
     const hashedPassword = await bcrypt.hash(registrationData.password, 10);
@@ -36,9 +36,13 @@ export class AuthenticationService {
     }
   }
 
-  public async getAuthenticatedUser(phone: string, originalPassword: string) {
+  async checkUserExist(username: string): Promise<boolean> {
+    return false;
+  }
+
+  public async getAuthenticatedUser(username: string, originalPassword: string) {
     try {
-      const user = await this.usersService.getByPhone(phone);
+      const user = await this.usersService.getByUsername(username);
       const isPasswordMatching = await bcrypt.compare(
         originalPassword,
         user.password, // hashed password
@@ -59,10 +63,11 @@ export class AuthenticationService {
     }
   }
 
-  public getCookieWithJwtToken(userId: number) {
+  public getCookieWithJwtToken(userId: number, username: string, name: string) {
     const payload: JwtPayload = {
       userId: userId,
-      phone: 'abc',
+      username: username,
+      name: name,
     };
     const token = this.jwtService.sign(payload);
     this.logger.debug('Got jwt signed token:', token);
@@ -76,11 +81,12 @@ export class AuthenticationService {
   }
 
   public async login(body: LoginBody): Promise<string> {
-    const user = await this.getAuthenticatedUser(body.phone, body.password);
+    const user = await this.getAuthenticatedUser(body.username, body.password);
 
     const payload: JwtPayload = {
       userId: user.id,
-      phone: user.phone,
+      username: user.username,
+      name: user.name,
     };
 
     return this.jwtService.sign(payload);

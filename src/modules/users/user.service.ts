@@ -13,31 +13,25 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
-  ) {}
+  ) { }
 
-  async getByPhone(phone: string): Promise<User> {
+  async getByUsername(username: string): Promise<User> {
     const user = await this.usersRepository.findOne({
       where: {
-        phone: phone,
+        username: username,
       },
     });
     if (user) {
       return user;
     }
     throw new HttpException(
-      'User with this phone does not exist',
+      'User with this username does not exist',
       HttpStatus.NOT_FOUND,
     );
   }
 
   async create(userData: CreateUserDto): Promise<User> {
     const newUser = await this.usersRepository.create(userData);
-    newUser.bankInfo = JSON.stringify({
-      name: '',
-      branch: '',
-      number: '',
-    });
-    newUser.balance = 0;
     await this.usersRepository.save(newUser);
     return newUser;
   }
@@ -78,7 +72,6 @@ export class UsersService {
       },
       {
         name: body.name,
-        bankInfo: JSON.stringify(body.bankInfo),
       },
     );
 
