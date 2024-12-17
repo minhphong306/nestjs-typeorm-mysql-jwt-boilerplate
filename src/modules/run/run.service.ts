@@ -2,12 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { exec } from 'child_process';
 import { promisify } from 'util';
 import { ConfigService } from '@nestjs/config';
+import { sendSlackNotification, initializeSlack } from '../../utils/slack';
 
 const execAsync = promisify(exec);
 
 @Injectable()
 export class RunService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(private readonly configService: ConfigService) {
+    initializeSlack(configService);
+  }
 
   async runPlaywrightTest(testName: string) {
     try {
@@ -19,20 +22,21 @@ export class RunService {
       const command = `cd ${codePath} && npx playwright test -g "${testName}"`;
       console.log('Running command:', command);
       
-      const { stdout, stderr } = await execAsync(command);
+      execAsync(command);
+
+      await sendSlackNotification(true, 'Trigger test successfully');
       
       return {
         success: true,
-        stdout,
-        stderr,
       };
     } catch (error) {
+      await sendSlackNotification(false, error.message);
       return {
         success: false,
         error: error.message,
-        stdout: error.stdout,
-        stderr: error.stderr,
       };
+
+      
     }
   }
 }

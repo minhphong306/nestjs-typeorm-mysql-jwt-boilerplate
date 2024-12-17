@@ -863,6 +863,20 @@
   dependencies:
     "@sinonjs/commons" "^1.7.0"
 
+"@slack/types@^2.9.0":
+  version "2.14.0"
+  resolved "https://registry.npmjs.org/@slack/types/-/types-2.14.0.tgz"
+  integrity sha512-n0EGm7ENQRxlXbgKSrQZL69grzg1gHLAVd+GlRVQJ1NSORo0FrApR7wql/gaKdu2n4TO83Sq/AmeUOqD60aXUA==
+
+"@slack/webhook@^7.0.4":
+  version "7.0.4"
+  resolved "https://registry.npmjs.org/@slack/webhook/-/webhook-7.0.4.tgz"
+  integrity sha512-JDJte2dbJCcq1/GCMBYJH6fj+YS4n5GuPjT4tF3O1NPN6pFPCR9yA/apRh9sdfhdFG7hadiRgmiQqC4GLgNkZg==
+  dependencies:
+    "@slack/types" "^2.9.0"
+    "@types/node" ">=18.0.0"
+    axios "^1.7.8"
+
 "@sqltools/formatter@^1.2.2":
   version "1.2.3"
   resolved "https://registry.npmjs.org/@sqltools/formatter/-/formatter-1.2.3.tgz"
@@ -1056,6 +1070,13 @@
   version "16.11.41"
   resolved "https://registry.npmjs.org/@types/node/-/node-16.11.41.tgz"
   integrity sha512-mqoYK2TnVjdkGk8qXAVGc/x9nSaTpSrFaGFm43BUH3IdoBV0nta6hYaGmdOvIMlbHJbUEVen3gvwpwovAZKNdQ==
+
+"@types/node@>=18.0.0":
+  version "22.10.2"
+  resolved "https://registry.npmjs.org/@types/node/-/node-22.10.2.tgz"
+  integrity sha512-Xxr6BBRCAOQixvonOye19wnzyDiUtTeqldOOmj3CkeblonbccA12PFwlufvRdrpjXxqnmUaeiU5EOA+7s5diUQ==
+  dependencies:
+    undici-types "~6.20.0"
 
 "@types/parse-json@^4.0.0":
   version "4.0.0"
@@ -1682,6 +1703,15 @@ asynckit@^0.4.0:
   version "0.4.0"
   resolved "https://registry.npmjs.org/asynckit/-/asynckit-0.4.0.tgz"
   integrity sha512-Oei9OH4tRh0YqU3GxhX79dM/mwVgvbZJaSNaRk+bshkj0S5cfHcgYakreBjrHwatXKbz+IoIdYLxrKim2MjW0Q==
+
+axios@^1.7.8:
+  version "1.7.9"
+  resolved "https://registry.npmjs.org/axios/-/axios-1.7.9.tgz"
+  integrity sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==
+  dependencies:
+    follow-redirects "^1.15.6"
+    form-data "^4.0.0"
+    proxy-from-env "^1.1.0"
 
 axios@0.27.2:
   version "0.27.2"
@@ -2842,10 +2872,10 @@ flatted@^3.1.0:
   resolved "https://registry.npmjs.org/flatted/-/flatted-3.2.6.tgz"
   integrity sha512-0sQoMh9s0BYsm+12Huy/rkKxVu4R1+r96YX5cG44rHV0pQ6iC3Q+mkoMFaGWObMFYQxCVT+ssG1ksneA2MI9KQ==
 
-follow-redirects@^1.14.9:
-  version "1.15.1"
-  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.1.tgz"
-  integrity sha512-yLAMQs+k0b2m7cVxpS1VKJVvoz7SS9Td1zss3XRwXj+ZDH00RJgnuLx7E44wx02kQLrdM3aOOy+FpzS7+8OizA==
+follow-redirects@^1.14.9, follow-redirects@^1.15.6:
+  version "1.15.9"
+  resolved "https://registry.npmjs.org/follow-redirects/-/follow-redirects-1.15.9.tgz"
+  integrity sha512-gew4GsXizNgdoRyqmyfMHyAmXsZDk6mHkSxZFCzW9gwlbtOW44CDtYavM+y+72qD/Vq2l550kMF52DT8fOLJqQ==
 
 fork-ts-checker-webpack-plugin@7.2.11:
   version "7.2.11"
@@ -2927,6 +2957,11 @@ fs.realpath@^1.0.0:
   version "1.0.0"
   resolved "https://registry.npmjs.org/fs.realpath/-/fs.realpath-1.0.0.tgz"
   integrity sha512-OO0pH2lK6a0hZnAdau5ItzHPI6pUlvI7jMVnxUQRtw4owF2wk8lOSabtGDCTP4Ggrg2MbGnWO9X8K1t4+fGMDw==
+
+fsevents@^2.3.2, fsevents@~2.3.2:
+  version "2.3.2"
+  resolved "https://registry.npmjs.org/fsevents/-/fsevents-2.3.2.tgz"
+  integrity sha512-xiqMQR4xAeHTuB9uWm+fFRcIOgKBMiOBP+eXiyT7jsgVCq1bkVygt00oASowB7EdtpOHaaPgKt812P9ab+DDKA==
 
 function-bind@^1.1.1:
   version "1.1.1"
@@ -4629,6 +4664,11 @@ proxy-addr@~2.0.7:
     forwarded "0.2.0"
     ipaddr.js "1.9.1"
 
+proxy-from-env@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmjs.org/proxy-from-env/-/proxy-from-env-1.1.0.tgz"
+  integrity sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==
+
 pseudomap@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npmjs.org/pseudomap/-/pseudomap-1.0.2.tgz"
@@ -5511,6 +5551,11 @@ typescript@*, "typescript@^3.4.5 || ^4.3.5", typescript@^4.4.4, typescript@>=2.7
   version "4.7.4"
   resolved "https://registry.npmjs.org/typescript/-/typescript-4.7.4.tgz"
   integrity sha512-C0WQT0gezHuw6AdY1M2jxUO83Rjf0HP7Sk1DtXj6j1EwkQNZrHAg2XPWlq62oqEhYvONq5pkC2Y9oPljWToLmQ==
+
+undici-types@~6.20.0:
+  version "6.20.0"
+  resolved "https://registry.npmjs.org/undici-types/-/undici-types-6.20.0.tgz"
+  integrity sha512-Ny6QZ2Nju20vw1SRHe3d9jVu6gJ+4e3+MMpqu7pqE5HT6WsTSlce++GQmK5UXS8mzV8DSYHrQH+Xrf2jVcuKNg==
 
 universalify@^0.1.2:
   version "0.1.2"

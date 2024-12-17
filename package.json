@@ -28,6 +28,7 @@
     "@nestjs/passport": "^8.2.2",
     "@nestjs/platform-express": "^8.1.1",
     "@nestjs/typeorm": "^8.1.4",
+    "@slack/webhook": "^7.0.4",
     "@types/hapi__joi": "^17.1.8",
     "bcrypt": "^5.0.1",
     "class-transformer": "^0.5.1",
